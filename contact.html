@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact — Bistro Aldo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="nav-logo">
+                Bistro Aldo
+                <span class="nav-tagline">Gastronomie française authentique</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="menu.html">Carte</a></li>
+                <li><a href="gallery.html" >Galerie</a></li>
+                <li><a href="reservations.html">Réservations</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+            
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-hero contact-hero-bg">
+        <h1>Contact</h1>
+        <p>Contactez‑nous</p>
+    </section>
+
+    <section class="contact-section">
+        <div class="contact-container">
+            <div class="contact-info fade-up">
+                <h2>Contact</h2>
+                <div class="contact-item">
+                    <strong>Nom</strong>
+                    <input type="text" placeholder="Votre nom" />
+                </div>
+                <div class="contact-item">
+                    <strong>E‑mail</strong>
+                    <input type="email" placeholder="Votre e‑mail" />
+                </div>
+                <div class="contact-item">
+                    <strong>Téléphone</strong>
+                    <input type="tel" placeholder="Votre numéro de téléphone" />
+                </div>
+                <div class="contact-item">
+                    <strong>Message</strong>
+                    <textarea rows="4" placeholder="Votre message"></textarea>
+                </div>
+                <button class="btn-primary">Envoyer</button>
+            </div>
+
+            <div class="contact-map fade-up">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.9916256937604!2d2.2944816156746897!3d48.858370079287444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e2964e34e2d%3A0x8ddca9ee380ef7e0!2sEiffel%20Tower!5e0!3m2!1sen!2sfr!4v1234567890123"
+                    width="100%"
+                    height="100%"
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                ></iframe>
+                <div class="map-details">
+                    <h3>Bistro Aldo</h3>
+                    <p>📍 42 Rue de l'Elysée, 75008 Paris</p>
+                    <p>📞 +33 (0)1 23 45 67 89</p>
+                    <p>✉️ bistroaldo@gmail.com</p>
+                    <p><strong>Heures d’ouverture :</strong><br/>
+                        Lun–Ven : 09h00 – 14h00<br/>
+                        Sam : 12h00 – 15h00<br/>
+                        Fermé le dimanche
+                    </p>
+                    <button class="btn-secondary">Réserver une table</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- LANGUAGE SELECTION MODAL -->
+<div id="lang-modal" class="lang-modal-overlay" aria-hidden="true">
+    <div class="lang-modal" role="dialog" aria-modal="true" aria-label="Choisir la langue">
+        <button class="lang-close" type="button" aria-label="Fermer la sélection de langue">×</button>
+        <h2>Choisir la langue</h2>
+        <ul class="lang-list">
+            <li>
+                <button type="button" class="lang-option" data-lang="en">
+                    <span class="flag">🇬🇧</span>
+                    <span class="lang-name">Anglais</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="lang-option" data-lang="fr">
+                    <span class="flag">🇫🇷</span>
+                    <span class="lang-name">Français</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="lang-option" data-lang="pt">
+                    <span class="flag">🇵🇹</span>
+                    <span class="lang-name">Portugais</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="lang-option" data-lang="es">
+                    <span class="flag">🇪🇸</span>
+                    <span class="lang-name">Espagnol</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="lang-option" data-lang="de">
+                    <span class="flag">🇩🇪</span>
+                    <span class="lang-name">Allemand</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="lang-option" data-lang="it">
+                    <span class="flag">🇮🇹</span>
+                    <span class="lang-name">Italien</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="lang-option" data-lang="ru">
+                    <span class="flag">🇷🇺</span>
+                    <span class="lang-name">Russe</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="lang-option" data-lang="ja">
+                    <span class="flag">🇯🇵</span>
+                    <span class="lang-name">Japonais</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="lang-option" data-lang="zh">
+                    <span class="flag">🇨🇳</span>
+                    <span class="lang-name">Chinois</span>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="lang-option" data-lang="nl">
+                    <span class="flag">🇳🇱</span>
+                    <span class="lang-name">Néerlandais</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="floating-cta-container">
+  <div class="xmas-modal-actions">
+    <button type="button" class="btn-outline" id="xmas-reserve-btn" onclick="window.location.href='reservations.html'">
+      ✨ Réserver cette soirée
+    </button>
+  </div>
+</div>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4>Bistro Aldo</h4>
+                <p>Cuisine gastronomique française authentique</p>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <p>+33 1 23 45 67 89</p>
+            </div>
+        </div>
+        <p class="footer-bottom">© 2025 Bistro Aldo.</p>
+    </footer>
+
+    <script src="translations.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

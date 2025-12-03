@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bistro Aldo - Restaurant gastronomique français authentique à Paris.">
+  <title>Bistro Aldo — Gastronomie française</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* ===== THEME VARIABLES ===== */
+    :root {
+      --burgundy: #6b0f1a;
+      --gold: #d4af37;
+      --bg-deep: #0a0a0a;
+      --text-main: #f5f5f5;
+    }
+
+    /* === BASE RESET === */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Lato', sans-serif; color:#fff; background:#111; line-height:1.6; overflow-x:hidden; }
+    a { text-decoration:none; color:inherit; }
+    ul { list-style:none; }
+    img { max-width:100%; display:block; }
+    button { cursor:pointer; }
+
+    /* === HERO SECTION === */
+    /* === HERO SECTION === */
+.hero {
+  position: relative;
+  /* leave full viewport minus navbar height */
+  height: calc(100vh - 70px);
+  width: 100%;
+  overflow: hidden;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  text-align: center;
+  margin-top: 70px;          /* push hero below the fixed navbar */
+  background-color: #000;
+}
+
+
+    /* === HERO VIDEO (Restored to Full Screen) === */
+    /* === HERO VIDEO (Restored to Full Screen) === */
+.hero-video {
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%;
+
+  /* makes it fill the screen like the image */
+  object-fit: cover; 
+  object-position: center top; 
+
+  z-index: 0;
+
+  /* IMPORTANT: cancel the transform coming from style.css */
+  transform: none;
+}
+
+
+    /* === OVERLAY & CONTENT === */
+    .hero-overlay {
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%;
+      /* Slightly darker overlay to match the elegant look */
+      background: rgba(0,0,0,0.5); 
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative; 
+      z-index: 2; 
+      animation: fadeInUp 1.2s ease forwards;
+      padding: 0 20px;
+      max-width: 900px;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif; 
+      font-size: clamp(3rem, 6vw, 5rem); 
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 12px rgba(0,0,0,0.9);
+      color: var(--gold);
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem; 
+      margin-bottom: 2.5rem;
+      color: #f0f0f0;
+      line-height: 1.6;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), #b89325);
+      color: #050505;
+      padding: 1rem 2.8rem;
+      border: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-radius: 999px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+      background: linear-gradient(135deg, #e5c158, var(--gold));
+    }
+
+    /* === SECTIONS GENERAL === */
+    section:not(.hero) { padding: 6rem 5%; position: relative; overflow: hidden; }
+    .section-heading { text-align: center; margin-bottom: 4rem; }
+    .section-heading h2 {
+      font-family: 'Playfair Display', serif; font-size: 3rem;
+      color: var(--gold); margin-bottom: 0.5rem;
+    }
+    .section-heading p { color: #ccc; font-size: 1.1rem; }
+
+    /* === ABOUT === */
+    .about-section {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 4rem; align-items: center; max-width: 1200px; margin: 0 auto;
+    }
+    .about-image {
+      background: url('restaurant-dining-room-wide.jpg') center/cover no-repeat;
+      height: 450px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.25);
+    }
+    .about-content h2 {
+      font-family: 'Playfair Display', serif; font-size: 2.8rem;
+      color: var(--gold); margin-bottom: 1.5rem;
+    }
+    .about-content p { color: #ddd; line-height: 1.8; margin-bottom: 2rem; }
+
+    /* === SIGNATURE DISHES === */
+    .signature-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem; max-width: 1200px; margin: 0 auto;
+    }
+    .signature-card {
+      background: rgba(26, 26, 26, 0.96); border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 16px; overflow: hidden; transition: transform 0.3s;
+    }
+    .signature-card:hover { transform: translateY(-10px); }
+    .signature-image { height: 240px; overflow: hidden; }
+    .signature-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+    .signature-card:hover img { transform: scale(1.1); }
+    .signature-body { padding: 1.8rem; }
+    .signature-body h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.6rem;
+      color: var(--gold); margin-bottom: 0.8rem;
+    }
+    .signature-body p { color: #ccc; margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .ghost-button {
+      border: 1px solid var(--gold); color: var(--gold); padding: 0.6rem 1.2rem;
+      border-radius: 999px; font-size: 0.85rem; text-transform: uppercase;
+      letter-spacing: 0.1em; text-decoration: none; display: inline-block; transition: 0.3s;
+    }
+    .ghost-button:hover { background: var(--gold); color: #000; }
+
+    /* === MINI GALLERY === */
+    .mini-gallery-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem; max-width: 1200px; margin: 0 auto;
+    }
+    .mini-item {
+      position: relative; height: 300px; overflow: hidden;
+      border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
+    }
+    .mini-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+    .mini-item:hover img { transform: scale(1.08); }
+    .mini-overlay {
+      position: absolute; bottom: 0; left: 0; width: 100%; padding: 1rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+      text-align: center; font-family: 'Playfair Display', serif;
+      font-weight: 600; font-size: 1.1rem; color: var(--gold);
+    }
+
+    /* === EXPERIENCE SECTION === */
+    .experience-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem; max-width: 1200px; margin: 0 auto;
+    }
+    .experience-item {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px; padding: 2.5rem 1.5rem; text-align: center; transition: transform 0.4s;
+    }
+    .experience-item:hover { transform: translateY(-8px); background: rgba(212, 175, 55, 0.08); }
+    .experience-item .exp-icon { font-size: 3rem; display: block; margin-bottom: 1.2rem; }
+    .experience-item h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.4rem;
+      margin-bottom: 0.8rem; color: var(--gold);
+    }
+    .experience-item p { color: #aaa; font-size: 0.95rem; }
+
+    /* === ANIMATION & FOOTER === */
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 1s ease-out; }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    
+    .footer {
+      background: #050505; border-top: 1px solid rgba(212, 175, 55, 0.2);
+      padding: 4rem 3% 2rem; text-align: center; color: #bbb;
+    }
+    .footer-content {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 3rem; max-width: 1000px; margin: 0 auto 3rem;
+    }
+    .footer h4 {
+      font-family: 'Playfair Display', serif; color: var(--gold);
+      margin-bottom: 1.2rem; font-size: 1.2rem;
+    }
+    .footer-col p { line-height: 1.8; font-size: 0.95rem; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2rem; font-size: 0.85rem; color: #666; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="nav-logo">
+        Bistro Aldo
+        <span class="nav-tagline">Gastronomie française authentique</span>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="active">Accueil</a></li>
+        <li><a href="menu.html">Carte</a></li>
+        <li><a href="gallery.html">Galerie</a></li>
+        <li><a href="reservations.html">Réservations</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="Video Project 1.mp4" type="video/mp4">
+    </video>
+    
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <h1 class="hero-title">Bistro Aldo</h1>
+      <p class="hero-subtitle">
+        Des vins soigneusement sélectionnés aux assiettes cinématographiques, chaque détail est pensé pour le luxe et le plaisir.
+      </p>
+      <a href="reservations.html" class="btn-primary">Réserver une table</a>
+    </div>
+  </section>
+
+  <section class="about-section reveal">
+    <div class="about-image"></div>
+    <div class="about-content">
+      <h2>Vivez l’élégance parisienne</h2>
+      <p>Situé au cœur de la ville, Bistro Aldo vous invite à redécouvrir la cuisine française dans un cadre intimiste et chaleureux, où chaque repas devient un souvenir inoubliable.</p>
+      <button class="btn-primary" onclick="window.location.href='reservations.html'">
+        Réserver maintenant
+      </button>
+    </div>
+  </section>
+
+  <section class="signature-section reveal">
+    <div class="section-heading">
+      <h2>Plats Signature</h2>
+      <p>Les incontournables de la gastronomie française</p>
+    </div>
+    <div class="signature-grid">
+      <div class="signature-card">
+        <div class="signature-image">
+          <img src="duck-breast-potatoes-salad.jpg" alt="Confit de canard">
+        </div>
+        <div class="signature-body">
+          <h3>Confit de canard</h3>
+          <p>Cuisse de canard confite, jus de vin rouge et purée de pommes de terre soyeuse.</p>
+          <a href="menu.html" class="ghost-button">Voir la carte</a>
+        </div>
+      </div>
+      <div class="signature-card">
+        <div class="signature-image">
+          <img src="salmon-tartare-closeup.jpg" alt="Homard Thermidor">
+        </div>
+        <div class="signature-body">
+          <h3>Homard Thermidor</h3>
+          <p>Homard grillé au feu de bois, crème au Champagne et gratin de Gruyère.</p>
+          <a href="menu.html" class="ghost-button">Voir la carte</a>
+        </div>
+      </div>
+      <div class="signature-card">
+        <div class="signature-image">
+          <img src="creme-brulee-dessert.jpg" alt="Soupe à l’oignon">
+        </div>
+        <div class="signature-body">
+          <h3>Soupe à l’oignon</h3>
+          <p>Oignons caramélisés dans un bouillon de bœuf riche, gratin doré au fromage.</p>
+          <a href="menu.html" class="ghost-button">Voir la carte</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mini-gallery-section reveal">
+    <div class="section-heading">
+      <h2>Ambiance Cinématographique</h2>
+      <p>Découvrez notre salle à manger, notre bar et nos assiettes.</p>
+    </div>
+    <div class="mini-gallery-grid">
+      <div class="mini-item">
+        <img src="restaurant-dining-room-wide.jpg" alt="Salle à manger">
+        <div class="mini-overlay">Salle à manger</div>
+      </div>
+      <div class="mini-item">
+        <img src="brick-wall-dining-area.jpg" alt="Bar à vins">
+        <div class="mini-overlay">Bar à vins</div>
+      </div>
+      <div class="mini-item">
+        <img src="ribeye-steak-fries.jpg" alt="Steak frites">
+        <div class="mini-overlay">Steak frites</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" class="experience-section reveal">
+    <div class="section-heading">
+      <h2>Expérience Prestige</h2>
+      <p>Dîner d’exception, service raffiné et ambiance soignée.</p>
+    </div>
+    <div class="experience-grid">
+      <div class="experience-item">
+        <span class="exp-icon">🎩</span>
+        <h3>Service Haut de Gamme</h3>
+        <p>Équipe attentive et discrète pour une soirée parfaitement fluide.</p>
+      </div>
+      <div class="experience-item">
+        <span class="exp-icon">👨‍🍳</span>
+        <h3>Chefs Gourmets</h3>
+        <p>Revisitant les grands classiques français avec une touche de modernité.</p>
+      </div>
+      <div class="experience-item">
+        <span class="exp-icon">💎</span>
+        <h3>Ambiance Élégante</h3>
+        <p>Tables éclairées à la bougie, assises en velours et bande-son soignée.</p>
+      </div>
+      <div class="experience-item">
+        <span class="exp-icon">🌿</span>
+        <h3>Ingrédients de Saison</h3>
+        <p>Produits frais et locaux issus d’artisans français de confiance.</p>
+      </div>
+    </div>
+  </section>
+<div class="floating-cta-container">
+  <div class="xmas-modal-actions">
+    <button type="button" class="btn-outline" id="xmas-reserve-btn" onclick="window.location.href='reservations.html'">
+      ✨ Réserver cette soirée
+    </button>
+  </div>
+</div>
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-col">
+        <h4>Bistro Aldo</h4>
+        <p>Cuisine gastronomique française authentique<br>Une expérience inoubliable.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>+33 1 23 45 67 89<br>info@bistro-aldo.com</p>
+      </div>
+      <div class="footer-col">
+        <h4>Horaires</h4>
+        <p>Déjeuner : 12h00 ‑ 14h30<br>Dîner : 19h00 ‑ 23h00<br>Fermé le lundi</p>
+      </div>
+    </div>
+    <p class="footer-bottom">© 2025 Bistro Aldo. Tous droits réservés.</p>
+  </footer>
+
+  <script src="translations.js"></script>
+  <script src="script.js"></script>
+  
+  <script>
+    // Scroll reveal logic
+    const reveals = document.querySelectorAll('.reveal');
+    function handleReveal() {
+      reveals.forEach(el => {
+        const windowHeight = window.innerHeight;
+        const elementTop = el.getBoundingClientRect().top;
+        if (elementTop < windowHeight - 150) {
+          el.classList.add('active');
+        }
+      });
+    }
+    window.addEventListener('scroll', handleReveal);
+    handleReveal();
+  </script>
+</body>
+</html>

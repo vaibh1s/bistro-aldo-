@@ -1,0 +1,1407 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Carte — Bistro Aldo</title>
+  <meta name="description"
+        content="Bistro Aldo — Un parcours de dégustation français cinématographique. Entrées, Plats, Pâtes, Burgers, Pizzas, Desserts." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basiclightbox@5.0.4/dist/basicLightbox.min.css">
+
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* ===== THEME OVERRIDE JUST FOR MENU PAGE ===== */
+    :root {
+      /* Match global dark / gold / burgundy theme */
+      --burgundy: #6b0f1a;
+      --burgundy-soft: #8a2433;
+      --gold: #d4af37;
+      --gold-soft: #e5c158;
+
+      /* Dark background + panels */
+      --bg-deep: #0a0a0a;                    /* page background */
+      --bg-panel: rgba(26, 26, 26, 0.96);    /* cards/panels */
+      --border-glass: rgba(212, 175, 55, 0.25);
+
+      /* Text colors aligned with style.css */
+      --text-main: #f5f5f5;                  /* main text */
+      --muted: #f5f5f5;
+      --muted-soft: #ccc;
+
+      /* Layout tokens */
+      --radius: 16px;
+      --container: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Use same font + black background as other pages */
+    body {
+      margin: 0;
+      font-family: var(--font-body, 'Lato', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial);
+      background: #0a0a0a;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    main.menu-shell{
+      max-width:var(--container);
+      margin:0 auto;
+      padding:96px 24px 40px; /* room for global navbar */
+      position:relative;
+    }
+
+    /* Scroll progress bar */
+    .scroll-progress{
+      position:fixed;
+      top:68px;
+      left:0;
+      width:100%;
+      height:3px;
+      background:linear-gradient(90deg,rgba(231,200,122,0.1),transparent);
+      z-index:900;
+      pointer-events:none;
+    }
+    .scroll-progress-fill{
+      width:0;
+      height:100%;
+      background:linear-gradient(90deg,var(--gold),var(--burgundy));
+      box-shadow:0 0 12px rgba(231,200,122,0.8);
+      transform-origin:left center;
+      transition:width 0.08s linear;
+    }
+
+    /* Local nav (stays visually close to global style) */
+    .menu-local-nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:18px;
+      gap:18px;
+    }
+    .menu-local-title h1{
+      font-family:'Playfair Display',serif;
+      font-size:30px;
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+      color:var(--gold);
+      margin:0 0 4px;
+    }
+    .menu-local-title p{
+      margin:0;
+      font-size:13px;
+      color:var(--muted-soft);
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+    }
+    .menu-step-indicator{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:12px;
+      color:var(--muted-soft);
+    }
+    .menu-step-dots{
+      display:flex;
+      gap:4px;
+    }
+    .menu-step-dots span{
+      width:6px;height:6px;border-radius:50%;
+      background:rgba(255,255,255,0.12);
+    }
+    .menu-step-dots span.active{
+      background:var(--gold);
+      box-shadow:0 0 10px rgba(231,200,122,0.7);
+    }
+
+    /* Hero intro block */
+    .menu-hero{
+      position:relative;
+      border-radius:20px;
+      padding:26px 24px 24px;
+      background:
+        radial-gradient(circle at 0 0,rgba(231,200,122,0.15),transparent 60%),
+        radial-gradient(circle at 100% 100%,rgba(74,31,47,0.8),transparent 55%),
+        rgba(3,2,4,0.96);
+      border:1px solid rgba(231,200,122,0.22);
+      overflow:hidden;
+      margin-bottom:24px;
+      backdrop-filter:blur(18px);
+    }
+    .menu-hero::before{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background:
+        radial-gradient(circle at 10% 0%,rgba(231,200,122,0.3),transparent 60%),
+        radial-gradient(circle at 90% 100%,rgba(0,0,0,0.7),transparent 55%);
+      opacity:0.6;
+      mix-blend-mode:soft-light;
+      pointer-events:none;
+    }
+    .menu-hero-inner{
+      position:relative;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:18px;
+      z-index:1;
+    }
+    .menu-hero-heading{
+      max-width:480px;
+    }
+    .menu-hero-heading h2{
+      margin:0 0 8px;
+      font-family:'Playfair Display',serif;
+      font-size:32px;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+    }
+    .menu-hero-heading p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .menu-hero-tag{
+      align-self:flex-start;
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      padding:5px 12px;
+      border-radius:999px;
+      border:1px solid rgba(231,200,122,0.4);
+      background:rgba(0,0,0,0.5);
+      color:var(--gold);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    /* Top Xmas cards (unchanged content) */
+    .top-menus{
+      display:flex;
+      gap:18px;
+      margin:22px 0 26px;
+      align-items:stretch;
+    }
+    .top-card{
+      flex:1;border-radius:16px;overflow:hidden;
+      background:var(--bg-panel);
+      border:1px solid var(--border-glass);
+      cursor:pointer;position:relative;
+      transition:transform .3s,box-shadow .3s,border-color .3s;
+      transform-origin:center center;
+    }
+    .top-card::before{
+      content:"";
+      position:absolute;inset:0;
+      background:radial-gradient(circle at 20% 0%,rgba(231,200,122,0.25),transparent 55%);
+      mix-blend-mode:soft-light;
+      opacity:0;
+      transition:opacity .28s;
+    }
+    .top-card:hover{
+      transform:translateY(-10px) scale(1.02);
+      box-shadow:0 32px 80px rgba(0,0,0,0.9);
+      border-color:rgba(231,200,122,0.35);
+    }
+    .top-card:hover::before{opacity:1;}
+    .top-card img{width:100%;height:220px;object-fit:cover;display:block}
+    .top-label{
+      position:absolute;left:16px;bottom:14px;
+      background:rgba(15,10,9,0.75);
+      padding:10px 14px;border-radius:10px;
+      color:var(--gold);font-weight:700;
+      box-shadow:0 10px 30px rgba(0,0,0,0.7);
+      letter-spacing:0.09em;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+
+    /* Category pill bar */
+    .category-bar{
+      display:flex;gap:10px;align-items:center;
+      flex-wrap:wrap;margin:4px 0 20px;
+    }
+    .category-bar button{
+      background:rgba(0,0,0,0.3);
+      border:1px solid rgba(255,255,255,0.08);
+      padding:7px 13px;border-radius:999px;
+      color:var(--muted);cursor:pointer;font-size:12px;
+      letter-spacing:0.12em;text-transform:uppercase;
+      transition:background .22s,color .22s,border-color .22s,transform .22s;
+    }
+    .category-bar button:hover{
+      transform:translateY(-1px);
+      border-color:rgba(231,200,122,0.6);
+    }
+    .category-bar button.active{
+      background:var(--gold);color:#111;border-color:var(--gold);
+      box-shadow:0 12px 32px rgba(231,200,122,0.45);
+    }
+
+    /* Stage sections */
+    .menu-stages{
+      display:flex;
+      flex-direction:column;
+      gap:36px;
+    }
+    .menu-stage{
+      position:relative;
+      border-radius:20px;
+      padding:22px 20px 16px;
+      background:linear-gradient(135deg,rgba(255,255,255,0.02),rgba(0,0,0,0.8));
+      border:1px solid var(--border-glass);
+      overflow:hidden;
+      backdrop-filter:blur(14px);
+    }
+    .menu-stage::before{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background:
+        radial-gradient(circle at 0 0,rgba(231,200,122,0.18),transparent 60%),
+        radial-gradient(circle at 100% 100%,rgba(74,31,47,0.9),transparent 55%);
+      opacity:0.4;
+      transform:translateY(0);
+      transition:opacity .4s;
+      pointer-events:none;
+    }
+    .menu-stage.in-view::before{
+      opacity:0.8;
+    }
+
+    .stage-header{
+      position:relative;
+      padding-bottom:10px;
+      margin-bottom:12px;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      overflow:hidden;
+    }
+    .stage-kicker{
+      font-size:11px;
+      letter-spacing:0.22em;
+      text-transform:uppercase;
+      color:var(--muted-soft);
+      margin-bottom:4px;
+    }
+    .stage-title{
+      font-family:'Playfair Display',serif;
+      font-size:24px;
+      letter-spacing:0.14em;
+      text-transform:uppercase;
+      display:inline-block;
+      position:relative;
+      white-space:nowrap;
+    }
+    .stage-title::after{
+      content:"";
+      position:absolute;
+      left:0;right:0;bottom:-4px;
+      height:1px;
+      background:linear-gradient(90deg,transparent,var(--gold),transparent);
+      opacity:0.0;
+      transform:translateX(-40%);
+      animation: shimmer 2.6s linear infinite;
+    }
+    .stage-sub{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:6px;
+      max-width:430px;
+    }
+
+    @keyframes shimmer{
+      0%{opacity:0;transform:translateX(-40%);}
+      25%{opacity:0.9;transform:translateX(0);}
+      60%{opacity:0;transform:translateX(40%);}
+      100%{opacity:0;transform:translateX(40%);}
+    }
+
+    /* Menu items */
+    .stage-items{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-top:8px;
+    }
+    .menu-item{
+      position:relative;
+      display:flex;
+      align-items:flex-start;
+      padding:10px 8px 10px 10px;
+      border-radius:12px;
+      background:rgba(0,0,0,0.45);
+      border:1px solid rgba(255,255,255,0.06);
+      cursor:pointer;
+      transition:transform .24s, box-shadow .24s, border-color .24s, background .24s;
+      transform-style:preserve-3d;
+    }
+    .menu-item:hover{
+      background:linear-gradient(120deg,rgba(231,200,122,0.12),rgba(0,0,0,0.7));
+      border-color:rgba(231,200,122,0.5);
+      box-shadow:0 18px 50px rgba(0,0,0,0.9);
+    }
+    .menu-item-left{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .menu-item-name-row{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      justify-content:space-between;
+    }
+    .menu-item-name{
+      font-size:15px;
+      font-weight:600;
+      letter-spacing:0.04em;
+    }
+    .menu-item-translation{
+      font-size:12px;
+      color:var(--muted-soft);
+      opacity:0;
+      transform:translateY(4px);
+      transition:opacity .2s, transform .2s;
+    }
+    .menu-item:hover .menu-item-translation{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .menu-item-meta-row{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-top:2px;
+    }
+    .menu-note{
+      font-size:11px;
+      color:var(--muted-soft);
+      letter-spacing:0.04em;
+    }
+
+    .menu-price{
+      font-size:15px;
+      font-weight:700;
+      color:var(--gold);
+      white-space:nowrap;
+      padding-left:12px;
+      position:relative;
+      transition:transform .2s,color .2s,text-shadow .2s;
+    }
+    .menu-item:hover .menu-price{
+      transform:translateX(4px) scale(1.1);
+      color:var(--gold-soft);
+      text-shadow:0 0 16px rgba(231,200,122,0.9);
+    }
+    .menu-price::before{
+      content:"";
+      position:absolute;
+      left:0;top:50%;
+      width:7px;height:1px;
+      background:rgba(231,200,122,0.6);
+      transform:translate(-9px,-50%);
+      opacity:0.7;
+    }
+
+    /* Chef badge */
+    .badge-chef{
+      font-size:10px;
+      text-transform:uppercase;
+      letter-spacing:0.14em;
+      padding:3px 9px;
+      border-radius:999px;
+      border:1px solid rgba(231,200,122,0.6);
+      color:var(--gold);
+      background:rgba(0,0,0,0.8);
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      position:relative;
+      overflow:hidden;
+    }
+    .badge-chef::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(120deg,transparent,rgba(231,200,122,0.5),transparent);
+      transform:translateX(-110%);
+      opacity:0.0;
+      animation:badgeSparkle 3s linear infinite;
+    }
+    @keyframes badgeSparkle{
+      0%{opacity:0;transform:translateX(-110%);}
+      40%{opacity:0;transform:translateX(-110%);}
+      55%{opacity:0.9;transform:translateX(0);}
+      70%{opacity:0;transform:translateX(110%);}
+      100%{opacity:0;transform:translateX(110%);}
+    }
+
+    .menu-item.chef-special{
+      border-color:rgba(231,200,122,0.4);
+      box-shadow:0 0 0 1px rgba(231,200,122,0.15);
+    }
+
+    footer.menu-footer{
+      margin-top:32px;
+      padding:18px;
+      color:var(--muted);
+      text-align:center;
+      font-size:13px;
+    }
+
+    /* Xmas modal (reused from previous concept) */
+    .xmas-modal{
+      max-width:960px;
+      background:#070506;
+      border-radius:18px;
+      border:1px solid rgba(231,200,122,0.35);
+      overflow:hidden;
+      box-shadow:0 40px 120px rgba(0,0,0,0.95);
+      display:grid;
+      grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);
+    }
+    .xmas-modal-img{
+      position:relative;
+      background:#000;
+    }
+    .xmas-modal-img img{
+      width:100%;height:100%;object-fit:cover;display:block;
+    }
+    .xmas-modal-content{
+      padding:22px 22px 20px;
+      display:flex;flex-direction:column;
+      gap:10px;
+      background:radial-gradient(circle at 0 0,rgba(231,200,122,0.18),transparent 55%),
+                 radial-gradient(circle at 100% 100%,rgba(74,31,47,0.8),transparent 60%);
+    }
+    .xmas-tag{
+      display:inline-flex;align-items:center;
+      gap:6px;font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      color:var(--muted);
+      background:rgba(0,0,0,0.45);
+      padding:4px 10px;border-radius:999px;
+    }
+    .xmas-modal-content h3{
+      margin:4px 0 6px;
+      font-family:'Playfair Display';font-size:22px;
+      color:var(--gold);
+    }
+    .xmas-modal-content p{
+      margin:0;
+      font-size:14px;
+      color:#f4efeb;
+    }
+    .xmas-modal-actions{
+      margin-top:14px;
+      display:flex;gap:10px;flex-wrap:wrap;
+    }
+    .btn-outline{
+      padding:9px 14px;
+      border-radius:999px;
+      border:1px solid rgba(231,200,122,0.6);
+      background:transparent;
+      color:var(--gold);
+      font-size:13px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      transition:background .22s,color .22s,transform .22s,box-shadow .22s;
+    }
+    .btn-outline:hover{
+      background:var(--gold);
+      color:#111;
+      transform:translateY(-2px);
+      box-shadow:0 16px 40px rgba(0,0,0,0.85);
+    }
+
+    /* Responsive tweaks */
+    @media(max-width:900px){
+      .xmas-modal{grid-template-columns:1fr;}
+      .xmas-modal-img{max-height:260px;}
+    }
+    @media(max-width:720px){
+      main.menu-shell{padding:92px 16px 32px;}
+      .menu-local-nav{flex-direction:column;align-items:flex-start;}
+      .top-menus{flex-direction:column;}
+      .menu-stage{padding:18px 14px 14px;}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+        <div class="navbar-container">
+            <div class="nav-logo">
+                Bistro Aldo
+                <span class="nav-tagline">Gastronomie française authentique</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="menu.html"class="active">Carte</a></li>
+                <li><a href="gallery.html">Galerie</a></li>
+                <li><a href="reservations.html">Réservations</a></li>
+                <li><a href="contact.html" >Contact</a></li>
+            </ul>
+            
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+
+
+<div class="scroll-progress" aria-hidden="true">
+  <div class="scroll-progress-fill" id="scrollProgressFill"></div>
+</div>
+
+<main class="menu-shell" role="main">
+
+  <header class="menu-local-nav">
+  <div class="menu-local-title">
+    <h1>Menu</h1>
+    <p>Carte complète des entrées, plats, pâtes, burgers, pizzas et desserts.</p>
+  </div>
+</header>
+
+
+  <section class="menu-hero" aria-label="Menu hero">
+    <div class="menu-hero-inner">
+      <div class="menu-hero-heading">
+        <div class="menu-hero-tag">
+          <span>Parcours dégustation de ce soir</span>
+        </div>
+        <h2>Du premier verre à la dernière miette.</h2>
+        <p>
+          Laissez‑vous porter par une séquence d’entrées, de plats et de desserts soigneusement
+          orchestrée, chaque assiette étant une scène d’une grande histoire de gastronomie française.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="top-menus" aria-label="menus de Noël">
+    <div class="top-card" id="xmas-standard" role="button" tabindex="0"
+         data-title="Menu de Noël — 29,90 €">
+      <img src="standard-christmas-menu.jpg" alt="Menu de Noël 29,90" loading="lazy">
+      <div class="top-label">Menu de Noël — 29,90 €</div>
+    </div>
+    <div class="top-card" id="xmas-prestige" role="button" tabindex="0"
+         data-title="Menu de Noël Prestige — 49,90 €">
+      <img src="prestige-christmas-menu.jpg" alt="Menu de Noël Prestige 49,90" loading="lazy">
+      <div class="top-label">Menu de Noël Prestige — 49,90 €</div>
+    </div>
+  </section>
+
+  <nav class="category-bar" role="tablist" aria-label="catégories du menu">
+    <button class="active" data-cat="all">Tous</button>
+    <button data-cat="entrees">Entrées</button>
+    <button data-cat="plats">Plats</button>
+    <button data-cat="pates">Pâtes</button>
+    <button data-cat="burgers">Burgers</button>
+    <button data-cat="pizzas">Pizzas</button>
+    <button data-cat="desserts">Desserts</button>
+    <button data-cat="xmas">Noël</button>
+  </nav>
+
+  <section class="menu-stages">
+
+    <section class="menu-stage reveal" data-stage="entrees">
+      <header class="stage-header">
+        <div class="stage-kicker">Acte I — Entrées</div>
+        <h3 class="stage-title">Prélude & Étincelle</h3>
+        <p class="stage-sub">
+          Petites assiettes lumineuses, texturées et aromatiques pour ouvrir la soirée et réveiller le palais.
+        </p>
+      </header>
+      <div class="stage-items">
+        <article class="menu-item" data-cat="entrees">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Escargots de Bourgogne</span>
+              <span class="menu-price">9,90 €</span>
+            </div>
+            <div class="menu-item-translation">Escargots de Bourgogne cuits au four dans un beurre persillé à l’ail.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="entrees">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Soupe à l'oignon gratinée</span>
+              <span class="menu-price">8,90 €</span>
+            </div>
+            <div class="menu-item-translation">Soupe d’oignons caramélisés, bouillon de bœuf riche, croûte de fromage dorée.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="entrees">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Œuf parfait, crème de parmesan</span>
+              <span class="menu-price">10,50 €</span>
+            </div>
+            <div class="menu-item-translation">Œuf cuit à basse température, crème de parmesan et croûtons croustillants.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="entrees">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Tartare de saumon</span>
+              <span class="menu-price">13,50 €</span>
+            </div>
+            <div class="menu-item-translation">Tartare de saumon frais, citron et herbes fines.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="entrees">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Salade César revisitée</span>
+              <span class="menu-price">11,90 €</span>
+            </div>
+            <div class="menu-item-translation">Laitue croquante, poulet rôti, copeaux de parmesan et croûtons.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="entrees">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Salade d'avocats aux crevettes</span>
+              <span class="menu-price">12,90 €</span>
+            </div>
+            <div class="menu-item-translation">Avocat, crevettes marinées aux agrumes et jeunes pousses croquantes.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="entrees">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Calamars frits</span>
+              <span class="menu-price">12,90 €</span>
+            </div>
+            <div class="menu-item-translation">Calamars croustillants, paprika fumé et aïoli au citron.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="entrees">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">La bufala tcha tcha tcha</span>
+              <span class="menu-price">13,50 €</span>
+            </div>
+            <div class="menu-item-translation">Mozzarella di bufala crémeuse, huile de basilic et tomates tièdes.</div>
+          </div>
+        </article>
+
+        <article class="menu-item chef-special" data-cat="entrees">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">
+                Foie gras mi‑cuit, chutney de figues
+                <span class="badge-chef">Signature du Chef</span>
+              </span>
+              <span class="menu-price">19,90 €</span>
+            </div>
+            <div class="menu-item-translation">
+              Foie gras mi‑cuit, brioche tiède et chutney de figues.
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="menu-stage reveal" data-stage="plats">
+      <header class="stage-header">
+        <div class="stage-kicker">Acte II — Plats</div>
+        <h3 class="stage-title">Grands Plats</h3>
+        <p class="stage-sub">
+          Braises, réductions et cuissons lentes : des plats généreux qui structurent l’expérience.
+        </p>
+      </header>
+      <div class="stage-items">
+        <article class="menu-item chef-special" data-cat="plats">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">
+                Magret de canard rôti
+                <span class="badge-chef">Coup de cœur du Chef</span>
+              </span>
+              <span class="menu-price">23,90 €</span>
+            </div>
+            <div class="menu-item-translation">
+              Magret de canard rôti, jus épicé au miel et purée de pommes de terre soyeuse.
+            </div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="plats">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Pavé de rumsteck, sauce poivre</span>
+              <span class="menu-price">24,90 €</span>
+            </div>
+            <div class="menu-item-translation">Pavé de rumsteck, sauce au poivre vert et frites.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="plats">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Entrecôte de bœuf</span>
+              <span class="menu-price">27,90 €</span>
+            </div>
+            <div class="menu-item-translation">Entrecôte grillée, beurre aux herbes et salade croquante.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="plats">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Côtes d'agneau grillées</span>
+              <span class="menu-price">23,90 €</span>
+            </div>
+            <div class="menu-item-translation">Côtes d’agneau grillées, jus au romarin et garniture de saison.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="plats">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Tartare de bœuf</span>
+              <span class="menu-price">21,90 €</span>
+            </div>
+            <div class="menu-item-translation">Tartare de bœuf coupé au couteau, condiments et frites.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="plats">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Gambas à la provençale</span>
+              <span class="menu-price">27,90 €</span>
+            </div>
+            <div class="menu-item-translation">Gambas rôties, ail, tomates et herbes de Provence.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="menu-stage reveal" data-stage="pates">
+      <header class="stage-header">
+        <div class="stage-kicker">Acte III — Pâtes</div>
+        <h3 class="stage-title">Soie & Sauce</h3>
+        <p class="stage-sub">
+          Plats de pâtes réconfortants, sauces profondes, fromages affinés et huiles parfumées.
+        </p>
+      </header>
+      <div class="stage-items">
+        <article class="menu-item" data-cat="pates">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Spaghetti Pomodorro</span>
+              <span class="menu-price">17,90 €</span>
+            </div>
+            <div class="menu-item-translation">Tomates San Marzano, basilic et huile d’olive.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="pates">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Tagliatelles carbonara</span>
+              <span class="menu-price">19,90 €</span>
+            </div>
+            <div class="menu-item-translation">Pancetta, pecorino et sauce onctueuse aux jaunes d’œufs.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="pates">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Spaghetti Bolognaise</span>
+              <span class="menu-price">19,90 €</span>
+            </div>
+            <div class="menu-item-translation">Ragoût de bœuf mijoté longuement et parmesan.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="pates">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Penne alla Boscaiola</span>
+              <span class="menu-price">19,90 €</span>
+            </div>
+            <div class="menu-item-translation">Champignons des bois, crème et herbes.</div>
+          </div>
+        </article>
+
+        <article class="menu-item chef-special" data-cat="pates">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">
+                Gnocchi alla gorgonzola
+                <span class="badge-chef">Option truffe</span>
+              </span>
+              <span class="menu-price">22,90 €</span>
+            </div>
+            <div class="menu-item-translation">Gnocchis de pommes de terre dans une crème tiède au gorgonzola.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="pates">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Gnocchi alla Melanzane</span>
+              <span class="menu-price">22,90 €</span>
+            </div>
+            <div class="menu-item-translation">Aubergines, tomates confites et basilic.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="menu-stage reveal" data-stage="burgers">
+      <header class="stage-header">
+        <div class="stage-kicker">Acte IV — Burgers</div>
+        <h3 class="stage-title">Classiques de Bistro</h3>
+        <p class="stage-sub">
+          Brioche toastée, sauces maison et steaks généreux pour une halte burger à la française.
+        </p>
+      </header>
+      <div class="stage-items">
+        <article class="menu-item chef-special" data-cat="burgers">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">
+                Burger Hot Maman
+                <span class="badge-chef">Spécialité de la maison</span>
+              </span>
+              <span class="menu-price">18,90 €</span>
+            </div>
+            <div class="menu-item-translation">Burger de bœuf signature, sauce secrète et oignons confits.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="burgers">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Cheese Burger</span>
+              <span class="menu-price">19,90 €</span>
+            </div>
+            <div class="menu-item-translation">Fromage affiné, oignons caramélisés et pickles.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="burgers">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Frenchy Burger</span>
+              <span class="menu-price">19,90 €</span>
+            </div>
+            <div class="menu-item-translation">Mayonnaise à la truffe, Comté et roquette.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="burgers">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Vegetarian Burger</span>
+              <span class="menu-price">18,90 €</span>
+            </div>
+            <div class="menu-item-translation">Galette de légumes grillés, yaourt aux herbes et feta.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="burgers">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Chicken Burger</span>
+              <span class="menu-price">18,90 €</span>
+            </div>
+            <div class="menu-item-translation">Poulet frit croustillant, miel pimenté et salade de chou.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="menu-stage reveal" data-stage="pizzas">
+      <header class="stage-header">
+        <div class="stage-kicker">Acte V — Pizzas</div>
+        <h3 class="stage-title">Scènes du Four</h3>
+        <p class="stage-sub">
+          Pâtes fines, garnitures généreuses et bords légèrement brûlés sortis de notre four en pierre.
+        </p>
+      </header>
+      <div class="stage-items">
+        <article class="menu-item" data-cat="pizzas">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Margherita</span>
+              <span class="menu-price">17,90 €</span>
+            </div>
+            <div class="menu-item-translation">Tomates, fior di latte et basilic.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="pizzas">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Regina</span>
+              <span class="menu-price">18,90 €</span>
+            </div>
+            <div class="menu-item-translation">Jambon, champignons et mozzarella.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="pizzas">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Salmone</span>
+              <span class="menu-price">22,90 €</span>
+            </div>
+            <div class="menu-item-translation">Saumon fumé, crème fraîche et aneth.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="pizzas">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Campione</span>
+              <span class="menu-price">18,90 €</span>
+            </div>
+            <div class="menu-item-translation">Sélection du chef selon le marché.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="pizzas">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Napolitaine</span>
+              <span class="menu-price">18,90 €</span>
+            </div>
+            <div class="menu-item-translation">Anchois, câpres et ail.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="pizzas">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Quatre Saisons</span>
+              <span class="menu-price">19,90 €</span>
+            </div>
+            <div class="menu-item-translation">Quatre garnitures, une pour chaque saison.</div>
+          </div>
+        </article>
+
+        <article class="menu-item chef-special" data-cat="pizzas">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">
+                Tartufo
+                <span class="badge-chef">Truffe noire</span>
+              </span>
+              <span class="menu-price">22,90 €</span>
+            </div>
+            <div class="menu-item-translation">Crème de truffe, champignons et parmesan.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="pizzas">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Poulet</span>
+              <span class="menu-price">19,90 €</span>
+            </div>
+            <div class="menu-item-translation">Poulet rôti, herbes et oignons.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="pizzas">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Quatre Fromages</span>
+              <span class="menu-price">19,90 €</span>
+            </div>
+            <div class="menu-item-translation">Quatre fromages français et italiens.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="menu-stage reveal" data-stage="desserts">
+      <header class="stage-header">
+        <div class="stage-kicker">Acte VI — Desserts</div>
+        <h3 class="stage-title">Dernières Notes</h3>
+        <p class="stage-sub">
+          Velouté, croquant et chaleur pour clore la soirée sur une note douce et persistante.
+        </p>
+      </header>
+      <div class="stage-items">
+        <article class="menu-item" data-cat="desserts">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Crème brûlée</span>
+              <span class="menu-price">7,90 €</span>
+            </div>
+            <div class="menu-item-translation">Crème à la vanille, fine croûte de sucre caramélisé.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="desserts">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Cheesecake</span>
+              <span class="menu-price">9,90 €</span>
+            </div>
+            <div class="menu-item-translation">Cheesecake cuit, coulis de fruits rouges.</div>
+          </div>
+        </article>
+
+        <article class="menu-item chef-special" data-cat="desserts">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">
+                Moelleux au chocolat
+                <span class="badge-chef">Cœur coulant</span>
+              </span>
+              <span class="menu-price">9,90 €</span>
+            </div>
+            <div class="menu-item-translation">Moelleux chaud au chocolat, cœur fondant.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="desserts">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Tarte fine aux pommes</span>
+              <span class="menu-price">8,50 €</span>
+            </div>
+            <div class="menu-item-translation">Fine pâte croustillante, pommes caramélisées.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="desserts">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Mousse au chocolat</span>
+              <span class="menu-price">7,90 €</span>
+            </div>
+            <div class="menu-item-translation">Mousse de chocolat noir, légère et aérienne.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="desserts">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Panna Cotta</span>
+              <span class="menu-price">7,90 €</span>
+            </div>
+            <div class="menu-item-translation">Panna cotta à la vanille, coulis de fruits rouges.</div>
+          </div>
+        </article>
+
+        <article class="menu-item" data-cat="desserts">
+          <div class="menu-item-left">
+            <div class="menu-item-name-row">
+              <span class="menu-item-name">Tiramisu</span>
+              <span class="menu-price">8,90 €</span>
+            </div>
+            <div class="menu-item-translation">Biscuit imbibé de café et crème mascarpone.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </section>
+
+  <footer class="menu-footer">
+    © 2025 Bistro Aldo — Gastronomie française authentique • Groupes (8+) • Tél. : +33 6 25 01 26 24
+  </footer>
+</main>
+
+<div class="floating-cta-container">
+  <div class="xmas-modal-actions">
+    <button type="button" class="btn-outline" id="reserveBtn">
+      ✨ Réserver cette soirée
+    </button>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/basiclightbox@5.0.4/dist/basicLightbox.min.js"></script>
+
+<script src="translations.js"></script>
+<script src="script.js"></script>
+
+<script>
+  const ZENCHEF_EMBED = null;
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/your-form-id';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Barre de progression du défilement
+  const progressFill = document.getElementById('scrollProgressFill');
+  function updateProgress(){
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const p = docHeight > 0 ? scrollTop / docHeight : 0;
+    progressFill.style.width = (p * 100) + '%';
+  }
+  window.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  // Animation lettre par lettre pour les titres de sections
+  function animateStageTitles(){
+    document.querySelectorAll('.stage-title').forEach(title=>{
+      const text = title.textContent.trim();
+      title.textContent = '';
+      const frag = document.createDocumentFragment();
+      [...text].forEach(char=>{
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.style.display = 'inline-block';
+        span.style.opacity = '0';
+        frag.appendChild(span);
+      });
+      title.appendChild(frag);
+      const chars = title.querySelectorAll('span');
+      gsap.fromTo(chars,
+        {y:18, opacity:0},
+        {
+          y:0, opacity:1, duration:0.7,
+          ease:'power3.out',
+          stagger:0.04,
+          scrollTrigger:{
+            trigger:title,
+            start:'top 90%',
+            once:true
+          }
+        }
+      );
+    });
+  }
+  animateStageTitles();
+
+  // Apparition des sections et léger parallaxe
+  document.querySelectorAll('.menu-stage').forEach(stage=>{
+    stage.classList.add('in-view');
+    gsap.fromTo(stage,
+      {y:40, autoAlpha:0},
+      {
+        y:0, autoAlpha:1, duration:0.8, ease:'power3.out',
+        scrollTrigger:{trigger:stage, start:'top 85%', once:true}
+      }
+    );
+    gsap.to(stage, {
+      backgroundPositionY:'-=40',
+      ease:'none',
+      scrollTrigger:{
+        trigger:stage,
+        start:'top bottom',
+        end:'bottom top',
+        scrub:true
+      }
+    });
+  });
+
+  // Apparition progressive des items dans chaque section
+  document.querySelectorAll('.menu-stage').forEach(stage=>{
+    const items = stage.querySelectorAll('.menu-item');
+    if(!items.length) return;
+    gsap.from(items,{
+      y:26,
+      autoAlpha:0,
+      duration:0.7,
+      ease:'power3.out',
+      stagger:0.07,
+      scrollTrigger:{
+        trigger:stage,
+        start:'top 80%',
+        once:true
+      }
+    });
+  });
+
+  // Effet 3D au survol des cartes
+  document.querySelectorAll('.menu-item').forEach(card=>{
+    const bounds = ()=>card.getBoundingClientRect();
+    card.addEventListener('mousemove', e=>{
+      const rect = bounds();
+      const x = (e.clientX - rect.left)/rect.width - 0.5;
+      const y = (e.clientY - rect.top)/rect.height - 0.5;
+      const rotateX = (-y * 6).toFixed(2);
+      const rotateY = (x * 8).toFixed(2);
+      card.style.transform =
+        `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', ()=>{
+      card.style.transform = '';
+    });
+  });
+
+  // Filtre par catégorie (affiche/masque les lignes, fait défiler vers la section)
+  const catButtons = document.querySelectorAll('.category-bar button');
+  catButtons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      catButtons.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.cat;
+      filterCategory(cat);
+    });
+  });
+
+  function filterCategory(cat){
+    const rows = document.querySelectorAll('.menu-item');
+    rows.forEach(r=>{
+      const rowCat = r.dataset.cat;
+      if(cat === 'all' || rowCat === cat) r.style.display = 'flex';
+      else r.style.display = 'none';
+    });
+
+    if(cat === 'xmas'){
+      document.getElementById('xmas-standard')
+        .scrollIntoView({behavior:'smooth',block:'center'});
+    }else if(cat !== 'all'){
+      const stage = document.querySelector(`.menu-stage[data-stage="${cat}"]`);
+      if(stage) stage.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  }
+  filterCategory('all');
+
+  // Modale de Noël cinématographique pour les deux cartes
+  function openXmasModal(card){
+    const imgEl = card.querySelector('img');
+    const src = imgEl ? imgEl.src : '';
+    const title = card.dataset.title || 'Menu de Noël';
+    const isPrestige = card.id === 'xmas-prestige';
+    const html = `
+      <div class="xmas-modal">
+        <div class="xmas-modal-img">
+          ${src ? `<img src="${src}" alt="${title}">` : ''}
+        </div>
+        <div class="xmas-modal-content">
+          <div class="xmas-tag">🎄 Spécial Noël</div>
+          <h3>${title}</h3>
+          <p>${
+            isPrestige
+              ? 'Notre expérience de Noël prestige : plats raffinés, accords soignés et long service à la bougie.'
+              : 'Un menu de Noël chaleureux et généreux, pensé pour les grandes tablées, les amis et les fêtes.'
+          }</p>
+          <div class="xmas-modal-actions">
+            <button type="button" class="btn-outline" id="xmas-reserve-btn">
+              ✨ Réserver cette soirée
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const instance = basicLightbox.create(html, {
+      onShow: () => {
+        gsap.fromTo('.xmas-modal',
+          {scale:0.9, autoAlpha:0, y:24},
+          {scale:1, autoAlpha:1, y:0, duration:0.6, ease:'power3.out'}
+        );
+      }
+    });
+    instance.show();
+
+    setTimeout(()=>{
+      const reserveBtn = document.getElementById('xmas-reserve-btn');
+      if (reserveBtn) {
+        reserveBtn.addEventListener('click', ()=>{
+          instance.close();
+          openReservation();
+        });
+      }
+    },50);
+  }
+
+  document.querySelectorAll('.top-card').forEach(card=>{
+    const handler = ()=>openXmasModal(card);
+    card.addEventListener('click', handler);
+    card.addEventListener('keypress', e=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        handler();
+      }
+    });
+  });
+
+  // Modale de réservation (formulaire simple ou embed externe)
+  function openReservation(){
+    if(ZENCHEF_EMBED){
+      const instance = basicLightbox.create(
+        `<div style="padding:8px;background:#111;border-radius:10px">${ZENCHEF_EMBED}</div>`
+      );
+      instance.show();
+      return;
+    }
+    const html = `<form action="${FORMSPREE_ENDPOINT}" method="POST"
+      style="min-width:300px;padding:18px;background:#fff;border-radius:10px;color:#111">
+      <h3 style="margin:0 0 8px">Réserver une table</h3>
+      <label style="display:block;margin-bottom:8px">Nom
+        <input name="name" required
+          style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd" />
+      </label>
+      <label style="display:block;margin-bottom:8px">Téléphone
+        <input name="phone" required
+          style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd" />
+      </label>
+      <label style="display:block;margin-bottom:8px">Date &amp; heure
+        <input type="datetime-local" name="datetime" required
+          style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd" />
+      </label>
+      <label style="display:block;margin-bottom:8px">Convives
+        <input type="number" name="guests" min="1" value="2" required
+          style="width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd" />
+      </label>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button type="submit"
+          style="flex:1;padding:10px;background:#4A1F2F;color:#fff;border-radius:8px;border:none">
+          Demander
+        </button>
+        <button type="button" id="cancelForm"
+          style="padding:10px;background:#eee;border-radius:8px;border:none">
+          Annuler
+        </button>
+      </div>
+    </form>`;
+    const inst = basicLightbox.create(html);
+    inst.show();
+    setTimeout(()=>{
+      document.getElementById('cancelForm')?.addEventListener('click', ()=>inst.close());
+    },50);
+  }
+  document.getElementById('reserveBtn').addEventListener('click', openReservation);
+
+  // Optionnel : Ctrl+P pour imprimer le parcours de dégustation
+  document.addEventListener('keydown',(e)=>{
+    if(e.ctrlKey && e.key === 'p'){
+      e.preventDefault();
+      window.print();
+    }
+  });
+</script>
+</body>
+</html>

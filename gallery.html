@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galerie - Le Restaurant Olde Dutch</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Your main stylesheet (colors, navbar, etc.) -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Page-specific styling (uses same dark / gold theme variables) -->
+  <style>
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-card: #1a1a1a;
+      --gold: #d4af37;
+      --text: #f5f5f5;
+      --text-light: #ccc;
+      --font-heading: "Playfair Display", serif;
+      --font-body: "Lato", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #181010 0%, #050505 55%, #000 100%);
+      color: var(--text);
+      font-family: var(--font-body);
+    }
+
+    .gallery-page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 7rem 2rem 4rem; /* space for fixed nav */
+    }
+
+    .gallery-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .gallery-header h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.4rem, 4vw, 3.1rem);
+      color: var(--gold);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.6rem;
+      text-transform: uppercase;
+    }
+
+    .gallery-header p {
+      color: var(--text-light);
+      font-size: 1rem;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .gallery-wrapper {
+      background: radial-gradient(circle at top left, rgba(212, 175, 55, 0.08), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(107, 15, 26, 0.16), transparent 60%);
+      border-radius: 18px;
+      padding: 2rem 1.5rem 2.5rem;
+      border: 1px solid rgba(212, 175, 55, 0.16);
+      box-shadow: 0 26px 70px rgba(0, 0, 0, 0.7);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      cursor: pointer;
+      background: #050505;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+      transform: translateY(0);
+      transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.45s ease;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.85);
+      border-color: rgba(212, 175, 55, 0.45);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.08);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 0.85rem 1rem 1rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.92), transparent);
+      transform: translateY(100%);
+      transition: transform 0.28s ease;
+    }
+
+    .gallery-item:hover .gallery-overlay {
+      transform: translateY(0);
+    }
+
+    .gallery-overlay p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+
+    .gallery-overlay span {
+      display: block;
+      margin-top: 0.15rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    /* Simple label helper: use the image alt as overlay title via data-caption if needed */
+    .gallery-item[data-caption] .gallery-overlay p::before {
+      content: attr(data-caption);
+      font-weight: 600;
+      margin-right: 0.25rem;
+    }
+
+    /* Lightbox (simple full-screen image viewer) */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1500;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 92vw;
+      max-height: 92vh;
+      border-radius: 10px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+    }
+
+    .lightbox-close {
+      position: fixed;
+      top: 1.6rem;
+      right: 2rem;
+      font-size: 1.8rem;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .gallery-page {
+        padding: 6rem 1.25rem 3rem;
+      }
+      .gallery-wrapper {
+        padding: 1.6rem 1.1rem 2rem;
+        border-radius: 14px;
+      }
+      .gallery-item img {
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ===== Navigation ===== -->
+ <nav class="navbar">
+        <div class="navbar-container">
+            <div class="nav-logo">
+                Bistro Aldo
+                <span class="nav-tagline">Gastronomie française authentique</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="menu.html">Carte</a></li>
+                <li><a href="gallery.html"class="active">Galerie</a></li>
+                <li><a href="reservations.html">Réservations</a></li>
+                <li><a href="contact.html" >Contact</a></li>
+            </ul>
+            
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+  <!-- ===== Page Galerie ===== -->
+  <main class="gallery-page">
+    <header class="gallery-header">
+      <h1>Notre Galerie</h1>
+      <p>Découvrez notre ambiance, nos cocktails et nos plats signature avant votre visite.</p>
+    </header>
+
+    <section class="gallery-wrapper" aria-label="Galerie du restaurant">
+      <div class="gallery-grid">
+        <figure class="gallery-item" data-caption="Mur de Vins">
+          <img src="brick-wall-dining-area.jpg" alt="Mur d'étagères remplies de bouteilles dans un bar français" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Mur de vins et étagères du bar</p>
+            <span>Atmosphère Cave</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Salle à Manger">
+          <img src="restaurant-dining-room-wide.jpg" alt="Vue large d'une salle à manger chaleureuse de restaurant français" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Salle chaleureuse avec éclairage doux</p>
+            <span>Salle à Manger</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Vue Bar">
+          <img src="restaurant-interior-bar-view.jpg" alt="Intérieur du restaurant avec bar et sièges" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Comptoir de bar et sièges hauts</p>
+            <span>Intérieur Bar</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Mur de Briques">
+          <img src="brick-wall-restaurant-seating.jpg" alt="Mur de briques avec logo peint et tables de restaurant" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Mur de briques avec logo peint</p>
+            <span>Mur Signature</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Crème Brûlée">
+          <img src="creme-brulee-dessert.jpg" alt="Dessert crème brûlée sur une assiette à motifs" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Crème brûlée classique</p>
+            <span>Touche Sucrée</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Club Sandwich">
+          <img src="club-sandwich-fries.jpg" alt="Club sandwich servi avec frites et salade" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Club sandwich empilé avec frites</p>
+            <span>Comfort Food</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Magret de Canard">
+          <img src="duck-breast-potatoes-salad.jpg" alt="Magret de canard avec pommes de terre et salade fraîche" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Magret de canard, pommes de terre et salade</p>
+            <span>Plat Signature</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Entrecôte">
+          <img src="ribeye-steak-fries.jpg" alt="Entrecôte servie avec frites et salade" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Entrecôte avec frites</p>
+            <span>Grill</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Assiette de Salade">
+          <img src="caesar-style-salad-plate.jpg" alt="Salade Caesar colorée sur une assiette décorative" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Salade Caesar vibrante</p>
+            <span>Verdure Fraîche</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Casserole de Moules">
+          <img src="mussels-pot-with-lemon.jpg" alt="Casserole de moules avec citron et herbes" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Moules à la sauce crémeuse</p>
+            <span>Fruits de Mer</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Cocktails">
+          <img src="bartender-mixing-cocktails.jpg" alt="Barman préparant des cocktails colorés au bar" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Cocktails préparés au bar</p>
+            <span>Mixologie</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Bol de Saumon">
+          <img src="salmon-salad-bowl.jpg" alt="Bol de salade fraîche avec saumon et verdure" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Bol de salade au saumon</p>
+            <span>Repas Léger</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Tartare de Saumon">
+          <img src="salmon-tartare-and-fries.jpg" alt="Tartare de saumon servi avec frites et salade" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Tartare de saumon et frites</p>
+            <span>Favori du Chef</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Tour d'Avocat">
+          <img src="avocado-salmon-tower-starter.jpg" alt="Entrée tour d'avocat et saumon avec baies" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Tour d'avocat et saumon</p>
+            <span>Entrée</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Cocktail Bleu">
+          <img src="blue-cocktail-glass.jpg" alt="Grand cocktail bleu avec citron vert et menthe" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Cocktail bleu au citron vert</p>
+            <span>Boisson Signature</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Boisson Citrus">
+          <img src="drink-with-lemon.jpg" alt="Verre de cocktail avec tranche de citron sur table en bois" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Cocktail citrus sur table en bois</p>
+            <span>Apéritif</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Pâtes à la Truffe">
+          <img src="truffle-pasta-with-crisps.jpg" alt="Pâtes à la truffe garnies de gaufrettes de pommes de terre croustillantes" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Pâtes à la truffe avec chips</p>
+            <span>Pâtes</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Salade Burrata">
+          <img src="burrata-rocket-salad.jpg" alt="Salade de burrata et roquette sur une assiette blanche" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Burrata et salade de roquette</p>
+            <span>Fraîcheur</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Tiramisu">
+          <img src="tiramisu-dessert-plate.jpg" alt="Tranche de tiramisu avec framboises sur une assiette" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Tiramisu aux framboises</p>
+            <span>Dessert</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Gâteau Caramel">
+          <img src="caramel-dessert-square.jpg" alt="Dessert carré au caramel garni de menthe" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Carré de dessert au caramel</p>
+            <span>Douceur</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Gros Plan Tartare">
+          <img src="salmon-tartare-closeup.jpg" alt="Gros plan de tartare de saumon aux graines de sésame" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Gros plan de tartare de saumon</p>
+            <span>Détail</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Mur de Bouteilles">
+          <img src="bar-bottle-shelves.jpg" alt="Étagères de bar remplies de bouteilles et verrerie" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Étagères arrière du bar</p>
+            <span>Spiritueux</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Verres à Vin">
+          <img src="red-wine-glass-bar.jpg" alt="Vin rouge et verres sur un comptoir de bar brillant" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Vin rouge et verrerie</p>
+            <span>Bar à Vins</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Menu Prestige">
+          <img src="prestige-christmas-menu.jpg" alt="Carte du menu de Noël Prestige" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Menu de Noël Prestige</p>
+            <span>Saisonnier</span>
+          </div>
+        </figure>
+
+        <figure class="gallery-item" data-caption="Menu Standard">
+          <img src="standard-christmas-menu.jpg" alt="Carte du menu de Noël Standard" loading="lazy" />
+          <div class="gallery-overlay">
+            <p>Menu de Noël Standard</p>
+            <span>Saisonnier</span>
+          </div>
+        </figure>
+      </div>
+    </section>
+  </main>
+<div class="floating-cta-container">
+  <div class="xmas-modal-actions">
+    <button type="button" class="btn-outline" id="xmas-reserve-btn" onclick="window.location.href='reservations.html'">
+      ✨ Réserver cette soirée
+    </button>
+  </div>
+</div>
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <span class="lightbox-close" onclick="closeLightbox()">×</span>
+    <img src="" alt="Image de galerie agrandie" />
+  </div>
+
+  <!-- Bouton d'appel téléphonique -->
+  <a href="tel:+17403851000" class="sticky-btn">📞 Réserver une Table</a>
+
+  <script src="script.js"></script>
+  <script>
+    // Lightbox simple basé sur la structure gallery-item
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = lightbox.querySelector('img');
+
+    document.querySelectorAll('.gallery-item img').forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
+    }
+
+    lightbox.addEventListener('click', e => {
+      if (e.target === lightbox) closeLightbox();
+    });
+  </script>
+</body>
+</html>
